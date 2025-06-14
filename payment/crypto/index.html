@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptocurrency Payment - Ichiban</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #DC143C;
+            --dark-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --gold-accent: #FFD700;
+            --success-green: #28a745;
+            --bitcoin-orange: #F7931A;
+            --ethereum-blue: #627EEA;
+            --crypto-green: #00D632;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(98,126,234,0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(247,147,26,0.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0,214,50,0.1) 0%, transparent 50%);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--crypto-green);
+        }
+
+        /* Payment Container */
+        .crypto-payment-container {
+            max-width: 800px;
+            margin: 100px auto 2rem;
+            padding: 2rem;
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .payment-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, var(--bitcoin-orange), var(--ethereum-blue), var(--crypto-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Crypto Selection */
+        .crypto-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .crypto-option {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crypto-option::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--bitcoin-orange), var(--ethereum-blue), var(--crypto-green));
+            border-radius: 15px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .crypto-option:hover::before {
+            opacity: 1;
+        }
+
+        .crypto-option:hover {
+            transform: translateY(-5px);
+            background: rgba(0,0,0,0.8);
+        }
+
+        .crypto-option.selected {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .crypto-option.selected::before {
+            opacity: 1;
+        }
+
+        .crypto-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .crypto-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .crypto-rate {
+            font-size: 0.9rem;
+            color: rgba(240,240,240,0.7);
+        }
+
+        /* Payment Details */
+        .payment-details {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .amount-crypto {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--crypto-green);
+        }
+
+        /* QR Code Section */
+        .qr-section {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 1rem auto;
+            background: 
+                repeating-linear-gradient(0deg, #000 0px, #000 8px, #fff 8px, #fff 16px),
+                repeating-linear-gradient(90deg, #000 0px, #000 8px, #fff 8px, #fff 16px);
+            background-blend-mode: multiply;
+            border: 4px solid #000;
+        }
+
+        .wallet-address {
+            background: rgba(0,0,0,0.9);
+            color: var(--crypto-green);
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            margin: 1rem 0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .wallet-address:hover {
+            background: rgba(0,0,0,1);
+        }
+
+        .copy-btn {
+            background: var(--crypto-green);
+            color: black;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,214,50,0.5);
+        }
+
+        /* Timer */
+        .payment-timer {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255,0,0,0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255,0,0,0.3);
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-red);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Transaction Status */
+        .status-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 0.5rem 2rem;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid var(--gold-accent);
+            border-radius: 50px;
+            color: var(--gold-accent);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Network Fee */
+        .network-fee {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: rgba(240,240,240,0.7);
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--crypto-green);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Success Animation */
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .success-checkmark.show {
+            display: block;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Live Price Ticker */
+        .price-ticker {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            padding: 0.5rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .price-up {
+            color: var(--crypto-green);
+        }
+
+        .price-down {
+            color: var(--primary-red);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../menu.html">Menu</a></li>
+            <li><a href="../../cocktails.html">Jason's Cocktails</a></li>
+            <li><a href="../index.html">Payment Options</a></li>
+        </ul>
+    </nav>
+
+    <!-- Payment Container -->
+    <div class="crypto-payment-container">
+        <a href="../index.html" class="back-link">← Back to Payment Options</a>
+        
+        <!-- Header -->
+        <div class="payment-header">
+            <h1>₿ Cryptocurrency Payment</h1>
+            <p>Pay with Bitcoin, Ethereum, or other cryptocurrencies</p>
+        </div>
+
+        <!-- Crypto Selection -->
+        <div class="crypto-selection">
+            <div class="crypto-option selected" data-crypto="btc">
+                <div class="crypto-icon">₿</div>
+                <div class="crypto-name">Bitcoin</div>
+                <div class="crypto-rate">0.00256 BTC</div>
+            </div>
+            <div class="crypto-option" data-crypto="eth">
+                <div class="crypto-icon">Ξ</div>
+                <div class="crypto-name">Ethereum</div>
+                <div class="crypto-rate">0.0412 ETH</div>
+            </div>
+            <div class="crypto-option" data-crypto="usdt">
+                <div class="crypto-icon">₮</div>
+                <div class="crypto-name">USDT</div>
+                <div class="crypto-rate">106.85 USDT</div>
+            </div>
+            <div class="crypto-option" data-crypto="doge">
+                <div class="crypto-icon">🐕</div>
+                <div class="crypto-name">Dogecoin</div>
+                <div class="crypto-rate">1,337 DOGE</div>
+            </div>
+        </div>
+
+        <!-- Payment Details -->
+        <div class="payment-details">
+            <div class="detail-row">
+                <span>Order Total (USD)</span>
+                <span>$106.85</span>
+            </div>
+            <div class="detail-row">
+                <span>Selected Currency</span>
+                <span id="selectedCurrency">Bitcoin (BTC)</span>
+            </div>
+            <div class="detail-row">
+                <span>Amount to Send</span>
+                <span class="amount-crypto" id="cryptoAmount">0.00256 BTC</span>
+            </div>
+            <div class="detail-row">
+                <span>Network</span>
+                <span id="networkName">Bitcoin Mainnet</span>
+            </div>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="qr-section" id="qrSection">
+            <h3 style="color: #333; margin-bottom: 1rem;">Scan QR Code to Pay</h3>
+            <div class="qr-code"></div>
+            <p style="color: #666; margin: 1rem 0;">Or send to this address:</p>
+            <div class="wallet-address" id="walletAddress" onclick="copyAddress()">
+                bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+            </div>
+            <button class="copy-btn" onclick="copyAddress()">📋 Copy Address</button>
+        </div>
+
+        <!-- Payment Timer -->
+        <div class="payment-timer">
+            <p>Payment must be received within:</p>
+            <div class="timer-display" id="timer">15:00</div>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">After this time, the exchange rate will be recalculated</p>
+        </div>
+
+        <!-- Network Fee Notice -->
+        <div class="network-fee">
+            ⚡ Recommended network fee: 0.00001 BTC for faster confirmation
+        </div>
+
+        <!-- Transaction Status -->
+        <div class="status-section">
+            <div class="status-indicator" id="statusIndicator">
+                ⏳ Waiting for payment...
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">
+                Transaction ID will appear here once payment is detected
+            </p>
+        </div>
+
+        <!-- Success Checkmark (hidden initially) -->
+        <div class="success-checkmark" id="successCheck">
+            <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#28a745" stroke-width="4"/>
+                <path d="M30 50 L45 65 L70 35" fill="none" stroke="#28a745" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Live Price Ticker -->
+    <div class="price-ticker">
+        <div class="ticker-item">
+            <span>₿ BTC:</span>
+            <span class="price-up">$41,750 ↑ 2.3%</span>
+        </div>
+        <div class="ticker-item">
+            <span>Ξ ETH:</span>
+            <span class="price-down">$2,595 ↓ 0.8%</span>
+        </div>
+        <div class="ticker-item">
+            <span>₮ USDT:</span>
+            <span>$1.00 → 0.0%</span>
+        </div>
+        <div class="ticker-item">
+            <span>🐕 DOGE:</span>
+            <span class="price-up">$0.08 ↑ 5.2%</span>
+        </div>
+    </div>
+
+    <script>
+        // Crypto selection
+        const cryptoOptions = document.querySelectorAll('.crypto-option');
+        const walletAddresses = {
+            btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+            eth: '0x742d35Cc6634C0532925a3b844Bc9e7595f5f5f5',
+            usdt: 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9',
+            doge: 'DH5yaieqoZN36fDVciNyRueRGvGLR3mr7L'
+        };
+
+        const cryptoDetails = {
+            btc: { name: 'Bitcoin (BTC)', amount: '0.00256 BTC', network: 'Bitcoin Mainnet' },
+            eth: { name: 'Ethereum (ETH)', amount: '0.0412 ETH', network: 'Ethereum Mainnet' },
+            usdt: { name: 'Tether (USDT)', amount: '106.85 USDT', network: 'Tron Network' },
+            doge: { name: 'Dogecoin (DOGE)', amount: '1,337 DOGE', network: 'Dogecoin Network' }
+        };
+
+        cryptoOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                cryptoOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                
+                const crypto = option.dataset.crypto;
+                const details = cryptoDetails[crypto];
+                
+                document.getElementById('selectedCurrency').textContent = details.name;
+                document.getElementById('cryptoAmount').textContent = details.amount;
+                document.getElementById('networkName').textContent = details.network;
+                document.getElementById('walletAddress').textContent = walletAddresses[crypto];
+                
+                // Reset timer
+                resetTimer();
+            });
+        });
+
+        // Copy address function
+        function copyAddress() {
+            const address = document.getElementById('walletAddress').textContent;
+            navigator.clipboard.writeText(address).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = '✓ Copied!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy Address';
+                    btn.style.background = 'var(--crypto-green)';
+                }, 2000);
+            });
+        }
+
+        // Timer functionality
+        let timeLeft = 900; // 15 minutes in seconds
+        let timerInterval;
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timer').textContent = display;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('timer').textContent = 'EXPIRED';
+                document.getElementById('statusIndicator').textContent = '❌ Payment window expired';
+                document.getElementById('statusIndicator').style.borderColor = 'var(--error-red)';
+                document.getElementById('statusIndicator').style.color = 'var(--error-red)';
+            }
+            
+            timeLeft--;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 900;
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // Start timer
+        resetTimer();
+
+        // Simulate payment detection (for demo)
+        setTimeout(() => {
+            document.getElementById('statusIndicator').textContent = '🔍 Transaction detected...';
+            document.getElementById('statusIndicator').style.borderColor = 'var(--gold-accent)';
+            document.getElementById('statusIndicator').style.color = 'var(--gold-accent)';
+            
+            setTimeout(() => {
+                document.getElementById('statusIndicator').textContent = '✓ Payment confirmed!';
+                document.getElementById('statusIndicator').style.borderColor = 'var(--success-green)';
+                document.getElementById('statusIndicator').style.color = 'var(--success-green)';
+                document.getElementById('successCheck').classList.add('show');
+                clearInterval(timerInterval);
+                
+                setTimeout(() => {
+                    alert('Payment successful! Thank you for using crypto at Ichiban! 🎉');
+                    window.location.href = '../../index.html';
+                }, 2000);
+            }, 3000);
+        }, 10000); // Simulate payment after 10 seconds
+
+        // Animate prices in ticker
+        setInterval(() => {
+            const prices = document.querySelectorAll('.ticker-item span:last-child');
+            prices.forEach(price => {
+                if (Math.random() > 0.7) {
+                    const change = (Math.random() - 0.5) * 2;
+                    const isUp = change > 0;
+                    price.className = isUp ? 'price-up' : 'price-down';
+                }
+            });
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+{
+  "payment_config": {
+    "restaurant_name": "Ichiban Japanese Steakhouse",
+    "tax_rate": 0.06,
+    "service_charge": {
+      "party_size": 6,
+      "percentage": 0.10
+    },
+    "accepted_methods": {
+      "debit": {
+        "enabled": true,
+        "banks": ["Chase", "Bank of America", "Wells Fargo", "Citibank"],
+        "transaction_fee": 0.50,
+        "instant_processing": true
+      },
+      "credit": {
+        "enabled": true,
+        "cards": ["Visa", "Mastercard", "American Express", "Discover"],
+        "rewards_multiplier": 2,
+        "transaction_fee_percentage": 0.029
+      },
+      "crypto": {
+        "enabled": true,
+        "currencies": [
+          {
+            "symbol": "BTC",
+            "name": "Bitcoin",
+            "network": "Bitcoin Mainnet",
+            "confirmations_required": 3,
+            "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+          },
+          {
+            "symbol": "ETH",
+            "name": "Ethereum",
+            "network": "Ethereum Mainnet",
+            "confirmations_required": 12,
+            "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f5f5f5"
+          },
+          {
+            "symbol": "USDT",
+            "name": "Tether",
+            "network": "Tron Network",
+            "confirmations_required": 20,
+            "address": "TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9"
+          },
+          {
+            "symbol": "DOGE",
+            "name": "Dogecoin",
+            "network": "Dogecoin Network",
+            "confirmations_required": 6,
+            "address": "DH5yaieqoZN36fDVciNyRueRGvGLR3mr7L"
+          }
+        ],
+        "payment_window_minutes": 15,
+        "exchange_rate_api": "https://api.coingecko.com/api/v3/simple/price"
+      }
+    },
+    "security": {
+      "ssl_enabled": true,
+      "encryption": "AES-256",
+      "pci_compliant": true,
+      "tokenization": true
+    },
+    "sample_order": {
+      "items": [
+        {
+          "name": "Hibachi Dinner",
+          "quantity": 2,
+          "price": 26.95
+        },
+        {
+          "name": "Sushi Platter",
+          "quantity": 1,
+          "price": 32.95
+        },
+        {
+          "name": "Dragon Roll",
+          "quantity": 1,
+          "price": 13.95
+        }
+      ],
+      "subtotal": 100.80,
+      "tax": 6.05,
+      "total": 106.85
+    }
+  }
+}

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Options - Ichiban Japanese Steakhouse</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #DC143C;
+            --dark-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --gold-accent: #FFD700;
+            --success-green: #28a745;
+            --info-blue: #17a2b8;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(220,20,60,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,215,0,0.1) 0%, transparent 50%);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--primary-red);
+        }
+
+        /* Main Container */
+        .payment-container {
+            max-width: 1200px;
+            margin: 100px auto 2rem;
+            padding: 2rem;
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .payment-header h1 {
+            font-size: 3rem;
+            color: var(--gold-accent);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 10px rgba(255,215,0,0.3);
+        }
+
+        .payment-header p {
+            font-size: 1.2rem;
+            color: rgba(240,240,240,0.8);
+        }
+
+        /* Security Badge */
+        .security-badge {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(40,167,69,0.1);
+            border: 1px solid var(--success-green);
+            border-radius: 10px;
+            color: var(--success-green);
+        }
+
+        .security-badge svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* Payment Methods Grid */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .payment-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .payment-card:hover::before {
+            opacity: 1;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Card specific borders */
+        .debit-card {
+            border-color: var(--info-blue);
+        }
+
+        .debit-card:hover {
+            box-shadow: 0 20px 40px rgba(23,162,184,0.3);
+        }
+
+        .credit-card {
+            border-color: var(--gold-accent);
+        }
+
+        .credit-card:hover {
+            box-shadow: 0 20px 40px rgba(255,215,0,0.3);
+        }
+
+        .crypto-card {
+            border-color: var(--success-green);
+        }
+
+        .crypto-card:hover {
+            box-shadow: 0 20px 40px rgba(40,167,69,0.3);
+        }
+
+        .payment-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .payment-card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--light-text);
+        }
+
+        .payment-card p {
+            color: rgba(240,240,240,0.7);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .payment-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--primary-red);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .payment-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(220,20,60,0.5);
+        }
+
+        /* Feature List */
+        .features-list {
+            list-style: none;
+            text-align: left;
+            margin: 1rem 0;
+        }
+
+        .features-list li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        /* Info Section */
+        .info-section {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.02);
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .info-section h3 {
+            color: var(--gold-accent);
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../menu.html">Menu</a></li>
+            <li><a href="../cocktails.html">Jason's Cocktails</a></li>
+            <li><a href="../game.html">Sushi Rush</a></li>
+            <li><a href="index.html">Payment</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="payment-container">
+        <!-- Header -->
+        <div class="payment-header">
+            <h1>Choose Your Payment Method</h1>
+            <p>Secure, fast, and convenient payment options for your Ichiban experience</p>
+        </div>
+
+        <!-- Security Badge -->
+        <div class="security-badge">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+            </svg>
+            <span>All transactions are secured with 256-bit SSL encryption</span>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            <!-- Debit Card -->
+            <div class="payment-card debit-card">
+                <span class="payment-icon">💳</span>
+                <h2>Debit Card</h2>
+                <p>Pay directly from your bank account with instant processing</p>
+                <ul class="features-list">
+                    <li>Instant payment confirmation</li>
+                    <li>No credit checks required</li>
+                    <li>Lower transaction fees</li>
+                    <li>Secure PIN protection</li>
+                </ul>
+                <a href="debit/index.html" class="payment-btn">Pay with Debit</a>
+            </div>
+
+            <!-- Credit Card -->
+            <div class="payment-card credit-card">
+                <span class="payment-icon">💰</span>
+                <h2>Credit Card</h2>
+                <p>Enjoy rewards and buyer protection with major credit cards</p>
+                <ul class="features-list">
+                    <li>Earn rewards points</li>
+                    <li>Purchase protection</li>
+                    <li>Extended warranties</li>
+                    <li>Flexible payment options</li>
+                </ul>
+                <a href="credit/index.html" class="payment-btn">Pay with Credit</a>
+            </div>
+
+            <!-- Cryptocurrency -->
+            <div class="payment-card crypto-card">
+                <span class="payment-icon">₿</span>
+                <h2>Cryptocurrency</h2>
+                <p>Modern payment with Bitcoin, Ethereum, and more</p>
+                <ul class="features-list">
+                    <li>Low transaction fees</li>
+                    <li>Fast international payments</li>
+                    <li>Privacy focused</li>
+                    <li>No chargebacks</li>
+                </ul>
+                <a href="crypto/index.html" class="payment-btn">Pay with Crypto</a>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <h3>Need Help Choosing?</h3>
+            <p>Our staff is happy to assist you with any payment questions. All methods are processed securely and your information is never stored on our servers.</p>
+            <p style="margin-top: 1rem; color: var(--gold-accent);">
+                <strong>Note:</strong> 10% service charge will be added for parties of 6 or more
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Add floating particles effect
+        function createParticle() {
+            const colors = ['#FFD700', '#DC143C', '#17a2b8'];
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = '4px';
+            particle.style.height = '4px';
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.opacity = Math.random() * 0.5 + 0.5;
+            
+            const startX = Math.random() * window.innerWidth;
+            const startY = window.innerHeight + 10;
+            
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            
+            document.body.appendChild(particle);
+            
+            const duration = 5000 + Math.random() * 5000;
+            const horizontalMovement = (Math.random() - 0.5) * 200;
+            
+            particle.animate([
+                { transform: 'translate(0, 0) scale(1)', opacity: particle.style.opacity },
+                { transform: `translate(${horizontalMovement}px, -${window.innerHeight + 100}px) scale(0)`, opacity: 0 }
+            ], {
+                duration: duration,
+                easing: 'ease-out'
+            }).onfinish = () => particle.remove();
+        }
+        
+        // Create particles periodically
+        setInterval(createParticle, 500);
+    </script>
+</body>
+</html>

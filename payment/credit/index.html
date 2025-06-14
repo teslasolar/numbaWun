@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Payment - Ichiban</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #DC143C;
+            --dark-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --gold-accent: #FFD700;
+            --success-green: #28a745;
+            --error-red: #dc3545;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 70% 30%, rgba(255,215,0,0.2) 0%, transparent 50%);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        /* Payment Form Container */
+        .payment-form-container {
+            max-width: 600px;
+            margin: 100px auto 2rem;
+            padding: 2rem;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h1 {
+            font-size: 2.5rem;
+            color: var(--gold-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Credit Card 3D Effect */
+        .card-container {
+            perspective: 1000px;
+            margin-bottom: 2rem;
+        }
+
+        .credit-card {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            height: 240px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .credit-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backface-visibility: hidden;
+            padding: 2rem;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #FFA500, #FF8C00);
+            transform: rotateY(180deg);
+        }
+
+        .card-chip {
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #e0e0e0, #bdbdbd);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .card-number-display {
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            color: #333;
+        }
+
+        .magnetic-strip {
+            width: 100%;
+            height: 50px;
+            background: #333;
+            margin-top: 2rem;
+        }
+
+        .cvv-box {
+            background: white;
+            color: #333;
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Card Type Selection */
+        .card-types {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-type {
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 2rem;
+        }
+
+        .card-type:hover {
+            border-color: var(--gold-accent);
+        }
+
+        .card-type.selected {
+            border-color: var(--gold-accent);
+            background: rgba(255,215,0,0.2);
+        }
+
+        /* Form Styling */
+        .payment-form {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gold-accent);
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,215,0,0.3);
+            border-radius: 8px;
+            color: var(--light-text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--gold-accent);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Rewards Section */
+        .rewards-section {
+            background: rgba(255,215,0,0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .rewards-points {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .points-earned {
+            color: var(--gold-accent);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Billing Address */
+        .address-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, var(--gold-accent), #FFA500);
+            color: #333;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.5);
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--gold-accent);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Security badges */
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            opacity: 0.7;
+        }
+
+        .badge {
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../menu.html">Menu</a></li>
+            <li><a href="../../cocktails.html">Jason's Cocktails</a></li>
+            <li><a href="../index.html">Payment Options</a></li>
+        </ul>
+    </nav>
+
+    <!-- Payment Form Container -->
+    <div class="payment-form-container">
+        <a href="../index.html" class="back-link">← Back to Payment Options</a>
+        
+        <!-- Form Header -->
+        <div class="form-header">
+            <h1>💰 Credit Card Payment</h1>
+            <p>Earn rewards with every purchase</p>
+        </div>
+
+        <!-- Credit Card 3D -->
+        <div class="card-container">
+            <div class="credit-card" id="creditCard">
+                <div class="card-face card-front">
+                    <div class="card-chip"></div>
+                    <div class="card-number-display" id="cardNumberDisplay">•••• •••• •••• ••••</div>
+                    <div class="card-info">
+                        <div>
+                            <div style="font-size: 0.8rem;">CARD HOLDER</div>
+                            <div id="cardHolderDisplay" style="text-transform: uppercase;">YOUR NAME</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem;">EXPIRES</div>
+                            <div id="cardExpiryDisplay">MM/YY</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="magnetic-strip"></div>
+                    <div class="cvv-box" id="cvvDisplay">CVV</div>
+                    <div style="margin-top: 2rem; font-size: 0.8rem; text-align: center; color: #333;">
+                        Authorized signature — not valid unless signed
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Type Selection -->
+        <div class="card-types">
+            <div class="card-type selected" data-type="visa">💳</div>
+            <div class="card-type" data-type="mastercard">🔴</div>
+            <div class="card-type" data-type="amex">🔵</div>
+            <div class="card-type" data-type="discover">🟠</div>
+        </div>
+
+        <!-- Payment Form -->
+        <form class="payment-form" id="creditPaymentForm">
+            <!-- Rewards Section -->
+            <div class="rewards-section">
+                <div class="rewards-points">
+                    <span>🎁 Rewards Points Earned with this Purchase:</span>
+                    <span class="points-earned">+214 points</span>
+                </div>
+            </div>
+
+            <!-- Card Details -->
+            <div class="form-group">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cardHolder">Cardholder Name</label>
+                <input type="text" id="cardHolder" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="expiry">Expiry Date</label>
+                    <input type="text" id="expiry" maxlength="5" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" maxlength="4" placeholder="123" required 
+                           onfocus="document.getElementById('creditCard').classList.add('flipped')"
+                           onblur="document.getElementById('creditCard').classList.remove('flipped')">
+                </div>
+            </div>
+
+            <!-- Billing Address -->
+            <h3 style="margin: 2rem 0 1rem; color: var(--gold-accent);">Billing Address</h3>
+            
+            <div class="form-group">
+                <label for="address">Street Address</label>
+                <input type="text" id="address" placeholder="123 Main Street" required>
+            </div>
+
+            <div class="address-grid">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" placeholder="Bethlehem" required>
+                </div>
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <select id="state" required>
+                        <option value="">Select State</option>
+                        <option value="PA" selected>Pennsylvania</option>
+                        <option value="NJ">New Jersey</option>
+                        <option value="NY">New York</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="zip">ZIP Code</label>
+                <input type="text" id="zip" maxlength="5" placeholder="18015" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn">
+                Complete Payment - $106.85
+            </button>
+
+            <!-- Security Badges -->
+            <div class="security-badges">
+                <span class="badge">🔒</span>
+                <span class="badge">✓</span>
+                <span class="badge">🛡️</span>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Card type selection
+        const cardTypes = document.querySelectorAll('.card-type');
+        const creditCard = document.getElementById('creditCard');
+        
+        cardTypes.forEach(type => {
+            type.addEventListener('click', () => {
+                cardTypes.forEach(t => t.classList.remove('selected'));
+                type.classList.add('selected');
+                
+                // Change card gradient based on type
+                const cardFront = creditCard.querySelector('.card-front');
+                const cardType = type.dataset.type;
+                
+                switch(cardType) {
+                    case 'visa':
+                        cardFront.style.background = 'linear-gradient(135deg, #1a237e, #3949ab)';
+                        break;
+                    case 'mastercard':
+                        cardFront.style.background = 'linear-gradient(135deg, #eb001b, #f79e1b)';
+                        break;
+                    case 'amex':
+                        cardFront.style.background = 'linear-gradient(135deg, #006fcf, #00a1e0)';
+                        break;
+                    case 'discover':
+                        cardFront.style.background = 'linear-gradient(135deg, #ff6000, #ff8f00)';
+                        break;
+                    default:
+                        cardFront.style.background = 'linear-gradient(135deg, #FFD700, #FFA500)';
+                }
+            });
+        });
+
+        // Card number formatting and display
+        const cardNumberInput = document.getElementById('cardNumber');
+        const cardNumberDisplay = document.getElementById('cardNumberDisplay');
+        
+        cardNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+            
+            if (value.length > 0) {
+                let displayValue = formattedValue.padEnd(19, '•').replace(/•/g, (match, offset) => {
+                    return offset < formattedValue.length ? formattedValue[offset] : '•';
+                });
+                cardNumberDisplay.textContent = displayValue;
+            } else {
+                cardNumberDisplay.textContent = '•••• •••• •••• ••••';
+            }
+        });
+
+        // Cardholder name
+        const cardHolderInput = document.getElementById('cardHolder');
+        const cardHolderDisplay = document.getElementById('cardHolderDisplay');
+        
+        cardHolderInput.addEventListener('input', (e) => {
+            cardHolderDisplay.textContent = e.target.value.toUpperCase() || 'YOUR NAME';
+        });
+
+        // Expiry date
+        const expiryInput = document.getElementById('expiry');
+        const cardExpiryDisplay = document.getElementById('cardExpiryDisplay');
+        
+        expiryInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+            cardExpiryDisplay.textContent = value || 'MM/YY';
+        });
+
+        // CVV
+        const cvvInput = document.getElementById('cvv');
+        const cvvDisplay = document.getElementById('cvvDisplay');
+        
+        cvvInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+            cvvDisplay.textContent = e.target.value || 'CVV';
+        });
+
+        // ZIP code
+        document.getElementById('zip').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Form submission
+        const form = document.getElementById('creditPaymentForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Simulate processing
+            const btn = e.target.querySelector('.submit-btn');
+            btn.textContent = 'Processing...';
+            btn.disabled = true;
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            alert('Payment successful! You earned 214 rewards points! 🎉');
+            window.location.href = '../../index.html';
+        });
+    </script>
+</body>
+</html>

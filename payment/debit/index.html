@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debit Card Payment - Ichiban</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #DC143C;
+            --dark-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --gold-accent: #FFD700;
+            --info-blue: #17a2b8;
+            --success-green: #28a745;
+            --error-red: #dc3545;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 30% 30%, rgba(23,162,184,0.2) 0%, transparent 50%);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--info-blue);
+        }
+
+        /* Payment Form Container */
+        .payment-form-container {
+            max-width: 600px;
+            margin: 100px auto 2rem;
+            padding: 2rem;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h1 {
+            font-size: 2.5rem;
+            color: var(--info-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: rgba(240,240,240,0.7);
+        }
+
+        /* Card Preview */
+        .card-preview {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .card-number-display {
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            margin-top: 3rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .card-holder {
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        /* Form Styling */
+        .payment-form {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(23,162,184,0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--info-blue);
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(23,162,184,0.3);
+            border-radius: 8px;
+            color: var(--light-text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--info-blue);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 10px rgba(23,162,184,0.3);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Bank Selection */
+        .bank-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bank-option {
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bank-option:hover {
+            border-color: var(--info-blue);
+            transform: translateY(-2px);
+        }
+
+        .bank-option.selected {
+            border-color: var(--info-blue);
+            background: rgba(23,162,184,0.2);
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--gold-accent);
+            margin-top: 1rem;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, var(--info-blue), #2a5298);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(23,162,184,0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Security Note */
+        .security-note {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(40,167,69,0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--success-green);
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--info-blue);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: var(--info-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../../menu.html">Menu</a></li>
+            <li><a href="../../cocktails.html">Jason's Cocktails</a></li>
+            <li><a href="../index.html">Payment Options</a></li>
+        </ul>
+    </nav>
+
+    <!-- Payment Form Container -->
+    <div class="payment-form-container">
+        <a href="../index.html" class="back-link">← Back to Payment Options</a>
+        
+        <!-- Form Header -->
+        <div class="form-header">
+            <h1>💳 Debit Card Payment</h1>
+            <p>Secure payment directly from your bank account</p>
+        </div>
+
+        <!-- Card Preview -->
+        <div class="card-preview">
+            <div class="card-logo" style="color: white; font-size: 1.5rem;">DEBIT</div>
+            <div class="card-number-display" id="cardNumberDisplay">•••• •••• •••• ••••</div>
+            <div class="card-info">
+                <div class="card-holder" id="cardHolderDisplay">YOUR NAME</div>
+                <div class="card-expiry" id="cardExpiryDisplay">MM/YY</div>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <form class="payment-form" id="debitPaymentForm">
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h3 style="margin-bottom: 1rem; color: var(--info-blue);">Order Summary</h3>
+                <div class="order-item">
+                    <span>Hibachi Dinner (2)</span>
+                    <span>$53.90</span>
+                </div>
+                <div class="order-item">
+                    <span>Sushi Platter</span>
+                    <span>$32.95</span>
+                </div>
+                <div class="order-item">
+                    <span>Dragon Roll</span>
+                    <span>$13.95</span>
+                </div>
+                <div class="order-item">
+                    <span>Tax</span>
+                    <span>$6.05</span>
+                </div>
+                <div class="order-total">
+                    <span>Total</span>
+                    <span>$106.85</span>
+                </div>
+            </div>
+
+            <!-- Bank Selection -->
+            <div class="form-group">
+                <label>Select Your Bank</label>
+                <div class="bank-selection">
+                    <div class="bank-option" data-bank="chase">Chase</div>
+                    <div class="bank-option" data-bank="boa">Bank of America</div>
+                    <div class="bank-option" data-bank="wells">Wells Fargo</div>
+                    <div class="bank-option" data-bank="citi">Citibank</div>
+                </div>
+            </div>
+
+            <!-- Card Number -->
+            <div class="form-group">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" required>
+            </div>
+
+            <!-- Card Holder -->
+            <div class="form-group">
+                <label for="cardHolder">Cardholder Name</label>
+                <input type="text" id="cardHolder" placeholder="John Doe" required>
+            </div>
+
+            <!-- Expiry and CVV -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="expiry">Expiry Date</label>
+                    <input type="text" id="expiry" maxlength="5" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" maxlength="3" placeholder="123" required>
+                </div>
+            </div>
+
+            <!-- PIN -->
+            <div class="form-group">
+                <label for="pin">PIN (4 digits)</label>
+                <input type="password" id="pin" maxlength="4" placeholder="••••" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn">
+                <span id="btnText">Complete Payment - $106.85</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+
+            <!-- Security Note -->
+            <div class="security-note">
+                🔒 Your payment information is encrypted and secure. We do not store your card details.
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Bank selection
+        const bankOptions = document.querySelectorAll('.bank-option');
+        bankOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                bankOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        // Card number formatting
+        const cardNumberInput = document.getElementById('cardNumber');
+        const cardNumberDisplay = document.getElementById('cardNumberDisplay');
+        
+        cardNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+            
+            // Update card preview
+            if (value.length > 0) {
+                let displayValue = formattedValue.padEnd(19, '•').replace(/•/g, (match, offset) => {
+                    return offset < formattedValue.length ? formattedValue[offset] : '•';
+                });
+                cardNumberDisplay.textContent = displayValue;
+            } else {
+                cardNumberDisplay.textContent = '•••• •••• •••• ••••';
+            }
+        });
+
+        // Cardholder name update
+        const cardHolderInput = document.getElementById('cardHolder');
+        const cardHolderDisplay = document.getElementById('cardHolderDisplay');
+        
+        cardHolderInput.addEventListener('input', (e) => {
+            cardHolderDisplay.textContent = e.target.value.toUpperCase() || 'YOUR NAME';
+        });
+
+        // Expiry formatting
+        const expiryInput = document.getElementById('expiry');
+        const cardExpiryDisplay = document.getElementById('cardExpiryDisplay');
+        
+        expiryInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+            cardExpiryDisplay.textContent = value || 'MM/YY';
+        });
+
+        // Form submission
+        const form = document.getElementById('debitPaymentForm');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Check if bank is selected
+            const selectedBank = document.querySelector('.bank-option.selected');
+            if (!selectedBank) {
+                alert('Please select your bank');
+                return;
+            }
+            
+            // Show loading
+            btnText.style.display = 'none';
+            spinner.style.display = 'block';
+            
+            // Simulate payment processing
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Success message
+            alert('Payment successful! Thank you for dining at Ichiban!');
+            window.location.href = '../../index.html';
+        });
+
+        // Only allow numbers for certain inputs
+        document.getElementById('cvv').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+        
+        document.getElementById('pin').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    </script>
+</body>
+</html>

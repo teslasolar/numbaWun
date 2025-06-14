@@ -13,6 +13,7 @@ A modern, responsive website for Ichiban Japanese Steakhouse featuring hibachi a
 - 🔥 Liu Kang-inspired avatar for Jason
 - 🍹 Mortal Kombat themed cocktail menu
 - 🎮 Sushi Rush game - catch sushi with chopsticks!
+- 💳 Multi-payment processing system (Debit, Credit, Crypto)
 
 ## Structure
 
@@ -22,6 +23,14 @@ ichiban/
 ├── menu.html          # Full restaurant menu
 ├── cocktails.html     # Jason's Fire Fist Cocktails (Mortal Kombat themed)
 ├── game.html          # Sushi Rush game
+├── payment/           # Payment processing system
+│   ├── index.html    # Payment method selection
+│   ├── debit/        # Debit card payment
+│   │   └── index.html
+│   ├── credit/       # Credit card payment
+│   │   └── index.html
+│   └── crypto/       # Cryptocurrency payment
+│       └── index.html
 ├── images/            # Image assets
 │   ├── logo.svg      # Ichiban logo
 │   └── jason-liu-kang.svg  # Jason's Liu Kang avatar
