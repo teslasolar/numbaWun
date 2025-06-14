@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Japanese-style circle background -->
+  <circle cx="100" cy="100" r="90" fill="#DC143C" opacity="0.9"/>
+  
+  <!-- Stylized "I" for Ichiban -->
+  <text x="100" y="120" font-family="Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle" fill="#FFD700">一</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="50" cy="50" r="5" fill="#FFD700" opacity="0.7"/>
+  <circle cx="150" cy="50" r="5" fill="#FFD700" opacity="0.7"/>
+  <circle cx="50" cy="150" r="5" fill="#FFD700" opacity="0.7"/>
+  <circle cx="150" cy="150" r="5" fill="#FFD700" opacity="0.7"/>
+</svg>

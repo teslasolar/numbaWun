@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Ichiban Japanese Steakhouse</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #DC143C;
+            --dark-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --gold-accent: #FFD700;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--primary-red);
+        }
+
+        /* Menu Header */
+        .menu-header {
+            margin-top: 80px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(220,20,60,0.2), rgba(26,26,26,0.9));
+        }
+
+        .menu-header h1 {
+            font-size: 3rem;
+            color: var(--gold-accent);
+            margin-bottom: 1rem;
+        }
+
+        /* Menu Sections */
+        .menu-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .menu-section {
+            margin-bottom: 4rem;
+        }
+
+        .menu-section h2 {
+            font-size: 2.5rem;
+            color: var(--primary-red);
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .menu-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--gold-accent);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .menu-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(220,20,60,0.2);
+        }
+
+        .menu-item h3 {
+            color: var(--gold-accent);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .menu-item .price {
+            color: var(--primary-red);
+            font-weight: bold;
+            float: right;
+            font-size: 1.2rem;
+        }
+
+        .menu-item p {
+            color: rgba(240,240,240,0.8);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Special Banner */
+        .special-banner {
+            background: linear-gradient(45deg, var(--primary-red), var(--gold-accent));
+            padding: 2rem;
+            text-align: center;
+            margin: 3rem 0;
+            border-radius: 10px;
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; }
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-red);
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(220,20,60,0.5);
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(220,20,60,0.7);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html" class="active">Menu</a></li>
+            <li><a href="index.html#events">Events</a></li>
+            <li><a href="index.html#reservations">Reservations</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Menu Header -->
+    <div class="menu-header">
+        <h1>Our Menu</h1>
+        <p>Authentic Japanese cuisine crafted with passion</p>
+    </div>
+
+    <!-- Menu Container -->
+    <div class="menu-container">
+        <!-- Sushi Section -->
+        <div class="menu-section">
+            <h2>Sushi & Sashimi</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <h3>California Roll <span class="price">$8.95</span></h3>
+                    <p>Crab, avocado, cucumber wrapped in sushi rice and nori</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Dragon Roll <span class="price">$13.95</span></h3>
+                    <p>Shrimp tempura, cucumber topped with eel and avocado</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Rainbow Roll <span class="price">$14.95</span></h3>
+                    <p>California roll topped with assorted fresh fish</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Salmon Sashimi <span class="price">$12.95</span></h3>
+                    <p>Fresh salmon slices (6 pieces)</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Tuna Sashimi <span class="price">$13.95</span></h3>
+                    <p>Fresh tuna slices (6 pieces)</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Spicy Tuna Roll <span class="price">$9.95</span></h3>
+                    <p>Spicy tuna, cucumber, and scallions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Special Banner -->
+        <div class="special-banner">
+            <h2>🍱 Daily Lunch Specials Available 11:30 AM - 3:00 PM 🍱</h2>
+            <p>All lunch specials come with miso soup and salad</p>
+        </div>
+
+        <!-- Hibachi Section -->
+        <div class="menu-section">
+            <h2>Hibachi Dinners</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <h3>Hibachi Chicken <span class="price">$19.95</span></h3>
+                    <p>Tender chicken breast with vegetables, fried rice, and house sauces</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Hibachi Steak <span class="price">$26.95</span></h3>
+                    <p>NY strip steak cooked to perfection with vegetables and fried rice</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Hibachi Shrimp <span class="price">$23.95</span></h3>
+                    <p>Succulent jumbo shrimp with vegetables and fried rice</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Hibachi Salmon <span class="price">$24.95</span></h3>
+                    <p>Fresh Atlantic salmon with vegetables and fried rice</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Hibachi Lobster <span class="price">$39.95</span></h3>
+                    <p>Twin lobster tails with vegetables and fried rice</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Ichiban Special <span class="price">$32.95</span></h3>
+                    <p>Combination of steak, chicken, and shrimp</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Beverages Section -->
+        <div class="menu-section">
+            <h2>Beverages & Bar</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <h3>Hot Sake <span class="price">$6.95</span></h3>
+                    <p>Traditional warm Japanese rice wine</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Cold Sake <span class="price">$8.95</span></h3>
+                    <p>Premium chilled sake selection</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Japanese Beer <span class="price">$4.95</span></h3>
+                    <p>Sapporo, Kirin, or Asahi</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Plum Wine <span class="price">$7.95</span></h3>
+                    <p>Sweet Japanese plum wine</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Sake Bomb <span class="price">$8.95</span></h3>
+                    <p>Hot sake with beer</p>
+                </div>
+                <div class="menu-item">
+                    <h3>House Cocktails <span class="price">$9.95</span></h3>
+                    <p>Ask your server about today's specials</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to top button -->
+    <a href="#" class="back-to-top">↑</a>
+
+    <script>
+        // Smooth scrolling for back to top
+        document.querySelector('.back-to-top').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
