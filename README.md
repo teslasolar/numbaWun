@@ -12,6 +12,7 @@ A modern, responsive website for Ichiban Japanese Steakhouse featuring hibachi a
 - 🍺 Special bartender note for Jason!
 - 🔥 Liu Kang-inspired avatar for Jason
 - 🍹 Mortal Kombat themed cocktail menu
+- 🎮 Sushi Rush game - catch sushi with chopsticks!
 
 ## Structure
 
@@ -20,6 +21,7 @@ ichiban/
 ├── index.html          # Main homepage
 ├── menu.html          # Full restaurant menu
 ├── cocktails.html     # Jason's Fire Fist Cocktails (Mortal Kombat themed)
+├── game.html          # Sushi Rush game
 ├── images/            # Image assets
 │   ├── logo.svg      # Ichiban logo
 │   └── jason-liu-kang.svg  # Jason's Liu Kang avatar

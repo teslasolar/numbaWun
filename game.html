@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sushi Rush - Ichiban Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #DC143C;
+            --dark-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --gold-accent: #FFD700;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--primary-red);
+        }
+
+        /* Game Container */
+        .game-container {
+            background: rgba(255,255,255,0.05);
+            border: 3px solid var(--gold-accent);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 80px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            color: var(--gold-accent);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 10px rgba(255,215,0,0.5);
+        }
+
+        /* Game Stats */
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1rem;
+            gap: 2rem;
+        }
+
+        .stat {
+            background: rgba(220,20,60,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--primary-red);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(240,240,240,0.7);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            color: var(--gold-accent);
+            font-weight: bold;
+        }
+
+        /* Game Area */
+        #gameCanvas {
+            border: 2px solid var(--primary-red);
+            border-radius: 10px;
+            background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+            cursor: none;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Game Controls */
+        .game-controls {
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--gold-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255,215,0,0.5);
+        }
+
+        /* Instructions */
+        .instructions {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 1.5rem auto 0;
+        }
+
+        .instructions h3 {
+            color: var(--gold-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions p {
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Score Display */
+        .score-popup {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: bold;
+            pointer-events: none;
+            animation: scoreFloat 1s ease-out forwards;
+        }
+
+        @keyframes scoreFloat {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+        }
+
+        /* Game Over Screen */
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26,26,26,0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 3px solid var(--gold-accent);
+            text-align: center;
+            display: none;
+        }
+
+        .game-over h2 {
+            color: var(--gold-accent);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .final-score {
+            font-size: 1.5rem;
+            color: var(--primary-red);
+            margin-bottom: 1rem;
+        }
+
+        /* High Score */
+        .high-score {
+            color: var(--gold-accent);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        /* Mobile Controls */
+        .mobile-controls {
+            display: none;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-controls {
+                display: flex;
+                justify-content: center;
+            }
+            
+            .mobile-btn {
+                background: var(--primary-red);
+                color: white;
+                border: none;
+                padding: 1rem;
+                font-size: 2rem;
+                border-radius: 50%;
+                width: 60px;
+                height: 60px;
+                cursor: pointer;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="cocktails.html">Jason's Cocktails</a></li>
+            <li><a href="game.html">Sushi Rush</a></li>
+            <li><a href="index.html#events">Events</a></li>
+        </ul>
+    </nav>
+
+    <!-- Game Container -->
+    <div class="game-container">
+        <h1 class="game-title">🍣 Sushi Rush 🍣</h1>
+        
+        <!-- Game Stats -->
+        <div class="game-stats">
+            <div class="stat">
+                <div class="stat-label">Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Time</div>
+                <div class="stat-value" id="timer">60</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Combo</div>
+                <div class="stat-value" id="combo">x1</div>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+        <!-- Mobile Controls -->
+        <div class="mobile-controls">
+            <button class="mobile-btn" id="leftBtn">←</button>
+            <button class="mobile-btn" id="rightBtn">→</button>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="game-controls">
+            <button class="btn" id="startBtn">Start Game</button>
+            <button class="btn" id="pauseBtn" style="display: none;">Pause</button>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3>How to Play:</h3>
+            <p>🥢 Move your chopsticks left and right to catch the sushi!</p>
+            <p>🍣 Catch good sushi: +10 points (Salmon, Tuna, California Roll)</p>
+            <p>🌶️ Wasabi gives you speed boost but -5 points!</p>
+            <p>🔥 Avoid the burning plates: -20 points!</p>
+            <p>⚡ Build combos by catching sushi quickly!</p>
+            <p><strong>Controls:</strong> Mouse/Touch or Arrow Keys</p>
+        </div>
+
+        <!-- High Score Display -->
+        <div class="high-score">
+            High Score: <span id="highScore">0</span>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div class="game-over" id="gameOver">
+        <h2>Game Over!</h2>
+        <div class="final-score">Final Score: <span id="finalScore">0</span></div>
+        <div id="newHighScore" style="color: var(--gold-accent); display: none;">🎉 New High Score! 🎉</div>
+        <button class="btn" onclick="resetGame()">Play Again</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Game variables
+        let gameRunning = false;
+        let gamePaused = false;
+        let score = 0;
+        let timeLeft = 60;
+        let combo = 1;
+        let comboTimer = 0;
+        let highScore = parseInt(localStorage.getItem('sushiRushHighScore')) || 0;
+        
+        // Display high score
+        document.getElementById('highScore').textContent = highScore;
+        
+        // Player (chopsticks)
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height - 50,
+            width: 60,
+            height: 80,
+            speed: 8,
+            boosted: false,
+            boostTimer: 0
+        };
+        
+        // Sushi items
+        const items = [];
+        const itemTypes = [
+            { type: 'salmon', emoji: '🍣', points: 10, speed: 2 },
+            { type: 'tuna', emoji: '🍣', points: 10, speed: 2.5 },
+            { type: 'california', emoji: '🍣', points: 10, speed: 2 },
+            { type: 'wasabi', emoji: '🟢', points: -5, speed: 3, boost: true },
+            { type: 'burning', emoji: '🔥', points: -20, speed: 4 }
+        ];
+        
+        // Conveyor belt
+        const conveyorY = 100;
+        
+        // Input handling
+        let keys = {};
+        let mouseX = player.x;
+        
+        document.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+        });
+        
+        // Mobile controls
+        document.getElementById('leftBtn').addEventListener('touchstart', () => keys['ArrowLeft'] = true);
+        document.getElementById('leftBtn').addEventListener('touchend', () => keys['ArrowLeft'] = false);
+        document.getElementById('rightBtn').addEventListener('touchstart', () => keys['ArrowRight'] = true);
+        document.getElementById('rightBtn').addEventListener('touchend', () => keys['ArrowRight'] = false);
+        
+        // Touch controls
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            mouseX = touch.clientX - rect.left;
+        });
+        
+        // Game functions
+        function spawnItem() {
+            if (!gameRunning || gamePaused) return;
+            
+            const typeIndex = Math.floor(Math.random() * itemTypes.length);
+            const itemType = itemTypes[typeIndex];
+            
+            items.push({
+                x: Math.random() * (canvas.width - 40) + 20,
+                y: conveyorY,
+                width: 40,
+                height: 40,
+                ...itemType
+            });
+        }
+        
+        function updatePlayer() {
+            // Keyboard controls
+            if (keys['ArrowLeft']) {
+                player.x -= player.speed * (player.boosted ? 1.5 : 1);
+            }
+            if (keys['ArrowRight']) {
+                player.x += player.speed * (player.boosted ? 1.5 : 1);
+            }
+            
+            // Mouse/touch controls
+            const targetX = mouseX - player.width / 2;
+            const diff = targetX - player.x;
+            if (Math.abs(diff) > 5) {
+                player.x += diff * 0.1 * (player.boosted ? 1.5 : 1);
+            }
+            
+            // Keep player in bounds
+            player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
+            
+            // Update boost
+            if (player.boosted) {
+                player.boostTimer--;
+                if (player.boostTimer <= 0) {
+                    player.boosted = false;
+                }
+            }
+        }
+        
+        function updateItems() {
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                item.y += item.speed;
+                
+                // Check collision with player
+                if (item.y + item.height > player.y &&
+                    item.y < player.y + player.height &&
+                    item.x + item.width > player.x &&
+                    item.x < player.x + player.width) {
+                    
+                    // Caught the item!
+                    const points = Math.floor(item.points * combo);
+                    score += points;
+                    
+                    // Show score popup
+                    showScorePopup(player.x + player.width / 2, player.y, points);
+                    
+                    if (item.boost) {
+                        player.boosted = true;
+                        player.boostTimer = 180; // 3 seconds at 60fps
+                    }
+                    
+                    if (item.points > 0) {
+                        // Good catch - increase combo
+                        combo = Math.min(combo + 0.5, 5);
+                        comboTimer = 120; // 2 seconds to maintain combo
+                    } else {
+                        // Bad catch - reset combo
+                        combo = 1;
+                        comboTimer = 0;
+                    }
+                    
+                    items.splice(i, 1);
+                    continue;
+                }
+                
+                // Remove items that fell off screen
+                if (item.y > canvas.height) {
+                    if (item.points > 0) {
+                        // Missed good sushi - reset combo
+                        combo = 1;
+                        comboTimer = 0;
+                    }
+                    items.splice(i, 1);
+                }
+            }
+            
+            // Update combo timer
+            if (comboTimer > 0) {
+                comboTimer--;
+                if (comboTimer === 0) {
+                    combo = 1;
+                }
+            }
+        }
+        
+        function showScorePopup(x, y, points) {
+            const popup = document.createElement('div');
+            popup.className = 'score-popup';
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+            popup.style.color = points > 0 ? '#FFD700' : '#DC143C';
+            popup.textContent = (points > 0 ? '+' : '') + points;
+            document.body.appendChild(popup);
+            
+            setTimeout(() => popup.remove(), 1000);
+        }
+        
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = '#2a2a2a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw conveyor belt
+            ctx.fillStyle = '#444';
+            ctx.fillRect(0, conveyorY - 20, canvas.width, 60);
+            
+            // Draw conveyor belt lines
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < canvas.width; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i, conveyorY - 20);
+                ctx.lineTo(i + 20, conveyorY + 40);
+                ctx.stroke();
+            }
+            
+            // Draw items
+            ctx.font = '30px Arial';
+            items.forEach(item => {
+                ctx.fillText(item.emoji, item.x, item.y + 30);
+            });
+            
+            // Draw player (chopsticks)
+            ctx.fillStyle = player.boosted ? '#FFD700' : '#8B4513';
+            ctx.fillRect(player.x + 10, player.y, 10, player.height);
+            ctx.fillRect(player.x + 40, player.y, 10, player.height);
+            
+            // Draw chopstick tips
+            ctx.beginPath();
+            ctx.moveTo(player.x + 15, player.y);
+            ctx.lineTo(player.x + 15, player.y - 20);
+            ctx.moveTo(player.x + 45, player.y);
+            ctx.lineTo(player.x + 45, player.y - 20);
+            ctx.strokeStyle = player.boosted ? '#FFD700' : '#8B4513';
+            ctx.lineWidth = 10;
+            ctx.stroke();
+            
+            // Draw boost effect
+            if (player.boosted) {
+                ctx.strokeStyle = 'rgba(255, 215, 0, 0.5)';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(player.x - 5, player.y - 5, player.width + 10, player.height + 10);
+            }
+        }
+        
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('timer').textContent = timeLeft;
+            document.getElementById('combo').textContent = `x${combo.toFixed(1)}`;
+        }
+        
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            if (!gamePaused) {
+                updatePlayer();
+                updateItems();
+            }
+            
+            draw();
+            updateUI();
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function startGame() {
+            gameRunning = true;
+            gamePaused = false;
+            score = 0;
+            timeLeft = 60;
+            combo = 1;
+            items.length = 0;
+            
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('pauseBtn').style.display = 'inline-block';
+            document.getElementById('gameOver').style.display = 'none';
+            
+            // Start spawning items
+            const spawnInterval = setInterval(() => {
+                if (!gameRunning) {
+                    clearInterval(spawnInterval);
+                    return;
+                }
+                if (!gamePaused) {
+                    spawnItem();
+                }
+            }, 1000);
+            
+            // Start timer
+            const timerInterval = setInterval(() => {
+                if (!gameRunning) {
+                    clearInterval(timerInterval);
+                    return;
+                }
+                if (!gamePaused) {
+                    timeLeft--;
+                    if (timeLeft <= 0) {
+                        endGame();
+                    }
+                }
+            }, 1000);
+            
+            gameLoop();
+        }
+        
+        function pauseGame() {
+            gamePaused = !gamePaused;
+            document.getElementById('pauseBtn').textContent = gamePaused ? 'Resume' : 'Pause';
+        }
+        
+        function endGame() {
+            gameRunning = false;
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('gameOver').style.display = 'block';
+            
+            // Check for high score
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('sushiRushHighScore', highScore);
+                document.getElementById('highScore').textContent = highScore;
+                document.getElementById('newHighScore').style.display = 'block';
+            } else {
+                document.getElementById('newHighScore').style.display = 'none';
+            }
+        }
+        
+        function resetGame() {
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('pauseBtn').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'none';
+        }
+        
+        // Event listeners
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('pauseBtn').addEventListener('click', pauseGame);
+        
+        // Initial draw
+        draw();
+    </script>
+</body>
+</html>
