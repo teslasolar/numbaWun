@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jason's Fire Fist Cocktails - Ichiban</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #DC143C;
+            --dark-bg: #1a1a1a;
+            --light-text: #f0f0f0;
+            --gold-accent: #FFD700;
+            --fire-orange: #FF8C00;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(220,20,60,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,140,0,0.3) 0%, transparent 50%);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--fire-orange);
+            text-shadow: 0 0 10px var(--fire-orange);
+        }
+
+        /* Header Section */
+        .cocktail-header {
+            margin-top: 80px;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .liu-kang-avatar {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .cocktail-header h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--fire-orange), var(--gold-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 10px rgba(255,140,0,0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--primary-red);
+            font-style: italic;
+        }
+
+        /* Cocktail Grid */
+        .cocktails-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin: 3rem 0 2rem;
+            color: var(--fire-orange);
+            position: relative;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: '🔥';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+        }
+
+        .section-title::before {
+            left: -50px;
+        }
+
+        .section-title::after {
+            right: -50px;
+        }
+
+        .cocktail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .cocktail-card {
+            background: linear-gradient(135deg, rgba(255,140,0,0.1), rgba(220,20,60,0.1));
+            border: 2px solid rgba(255,215,0,0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cocktail-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--fire-orange), var(--primary-red), var(--gold-accent));
+            border-radius: 15px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .cocktail-card:hover::before {
+            opacity: 1;
+        }
+
+        .cocktail-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255,140,0,0.3);
+            background: rgba(26,26,26,0.95);
+        }
+
+        .cocktail-name {
+            font-size: 1.5rem;
+            color: var(--gold-accent);
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cocktail-price {
+            color: var(--fire-orange);
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .cocktail-description {
+            color: rgba(240,240,240,0.8);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .ingredients {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .ingredients h4 {
+            color: var(--primary-red);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .ingredients ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .ingredients li {
+            padding: 0.2rem 0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .ingredients li::before {
+            content: '🥃';
+            position: absolute;
+            left: 0;
+            font-size: 0.8rem;
+        }
+
+        /* Special Combo Section */
+        .combo-section {
+            background: linear-gradient(135deg, rgba(220,20,60,0.2), rgba(26,26,26,0.9));
+            padding: 3rem;
+            margin: 3rem 0;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .combo-section::before {
+            content: 'FATALITY SPECIAL';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            font-size: 8rem;
+            opacity: 0.05;
+            transform: rotate(-15deg);
+            font-weight: bold;
+            color: var(--primary-red);
+        }
+
+        .combo-title {
+            font-size: 2.5rem;
+            color: var(--gold-accent);
+            margin-bottom: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+            to { text-shadow: 0 0 30px rgba(255,215,0,0.8), 0 0 40px rgba(255,140,0,0.6); }
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0,0,0,0.8);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cocktail-header h1 {
+                font-size: 2rem;
+            }
+            
+            .cocktail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title::before,
+            .section-title::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="cocktails.html">Jason's Cocktails</a></li>
+            <li><a href="index.html#events">Events</a></li>
+            <li><a href="index.html#reservations">Reservations</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <div class="cocktail-header">
+        <img src="images/jason-liu-kang.svg" alt="Jason Liu Kang" class="liu-kang-avatar">
+        <h1>Jason's Fire Fist Cocktails</h1>
+        <p class="subtitle">"Test Your Might... and Your Taste Buds!"</p>
+    </div>
+
+    <!-- Cocktails Container -->
+    <div class="cocktails-container">
+        <!-- Signature Cocktails -->
+        <h2 class="section-title">Signature Fire Fist Cocktails</h2>
+        <div class="cocktail-grid">
+            <div class="cocktail-card">
+                <h3 class="cocktail-name">
+                    Dragon's Breath
+                    <span class="cocktail-price">$13</span>
+                </h3>
+                <p class="cocktail-description">
+                    A fiery blend that ignites your senses with every sip
+                </p>
+                <div class="ingredients">
+                    <h4>Ingredients:</h4>
+                    <ul>
+                        <li>Fireball Whiskey</li>
+                        <li>Sake</li>
+                        <li>Fresh ginger</li>
+                        <li>Lime juice</li>
+                        <li>Jalapeño garnish</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cocktail-card">
+                <h3 class="cocktail-name">
+                    Bicycle Kick
+                    <span class="cocktail-price">$12</span>
+                </h3>
+                <p class="cocktail-description">
+                    Hits you with a spinning sensation of citrus and spice
+                </p>
+                <div class="ingredients">
+                    <h4>Ingredients:</h4>
+                    <ul>
+                        <li>Vodka</li>
+                        <li>Yuzu juice</li>
+                        <li>Thai basil</li>
+                        <li>Chili simple syrup</li>
+                        <li>Soda water</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cocktail-card">
+                <h3 class="cocktail-name">
+                    Fatality Punch
+                    <span class="cocktail-price">$14</span>
+                </h3>
+                <p class="cocktail-description">
+                    One sip and it's game over... in the best way possible
+                </p>
+                <div class="ingredients">
+                    <h4>Ingredients:</h4>
+                    <ul>
+                        <li>151 Rum</li>
+                        <li>Passion fruit</li>
+                        <li>Blood orange</li>
+                        <li>Grenadine</li>
+                        <li>Flaming garnish</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cocktail-card">
+                <h3 class="cocktail-name">
+                    Shaolin Sunrise
+                    <span class="cocktail-price">$11</span>
+                </h3>
+                <p class="cocktail-description">
+                    A peaceful warrior's meditation in liquid form
+                </p>
+                <div class="ingredients">
+                    <h4>Ingredients:</h4>
+                    <ul>
+                        <li>Japanese whisky</li>
+                        <li>Lychee liqueur</li>
+                        <li>Orange blossom water</li>
+                        <li>Egg white</li>
+                        <li>Gold dust garnish</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mortal Kombat Classics -->
+        <h2 class="section-title">Mortal Kombat Classics</h2>
+        <div class="cocktail-grid">
+            <div class="cocktail-card">
+                <h3 class="cocktail-name">
+                    Sub-Zero Freeze
+                    <span class="cocktail-price">$10</span>
+                </h3>
+                <p class="cocktail-description">
+                    An icy blue concoction that'll chill you to the bone
+                </p>
+                <div class="ingredients">
+                    <h4>Ingredients:</h4>
+                    <ul>
+                        <li>Blue curaçao</li>
+                        <li>Coconut rum</li>
+                        <li>Pineapple juice</li>
+                        <li>Crushed ice</li>
+                        <li>Dry ice effect</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cocktail-card">
+                <h3 class="cocktail-name">
+                    Scorpion's Sting
+                    <span class="cocktail-price">$12</span>
+                </h3>
+                <p class="cocktail-description">
+                    "Get over here!" and try this spicy tequila masterpiece
+                </p>
+                <div class="ingredients">
+                    <h4>Ingredients:</h4>
+                    <ul>
+                        <li>Mezcal</li>
+                        <li>Yellow Chartreuse</li>
+                        <li>Habanero tincture</li>
+                        <li>Lime juice</li>
+                        <li>Scorpion pepper garnish</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Special Combo -->
+        <div class="combo-section">
+            <h2 class="combo-title">🔥 FINISH HIM! COMBO 🔥</h2>
+            <p style="font-size: 1.3rem; margin-bottom: 1rem;">
+                Order any 3 Fire Fist Cocktails and get the 4th one FREE!
+            </p>
+            <p style="color: var(--gold-accent); font-size: 1.1rem;">
+                *Valid Friday nights only when Jason's bartending*
+            </p>
+            <p style="margin-top: 2rem; font-style: italic;">
+                "Test your might with our cocktail flight challenge - finish all 4 and earn your spot on the Wall of Warriors!"
+            </p>
+        </div>
+
+        <!-- Non-Alcoholic Section -->
+        <h2 class="section-title">Peaceful Warrior Mocktails</h2>
+        <div class="cocktail-grid">
+            <div class="cocktail-card">
+                <h3 class="cocktail-name">
+                    White Lotus Tea
+                    <span class="cocktail-price">$7</span>
+                </h3>
+                <p class="cocktail-description">
+                    A calming blend for those who fight with wisdom
+                </p>
+                <div class="ingredients">
+                    <h4>Ingredients:</h4>
+                    <ul>
+                        <li>White tea</li>
+                        <li>Jasmine syrup</li>
+                        <li>Fresh mint</li>
+                        <li>Sparkling water</li>
+                        <li>Edible flowers</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cocktail-card">
+                <h3 class="cocktail-name">
+                    Dragon Fruit Punch
+                    <span class="cocktail-price">$8</span>
+                </h3>
+                <p class="cocktail-description">
+                    Vibrant and refreshing, no fatality required
+                </p>
+                <div class="ingredients">
+                    <h4>Ingredients:</h4>
+                    <ul>
+                        <li>Dragon fruit puree</li>
+                        <li>Coconut water</li>
+                        <li>Lime juice</li>
+                        <li>Agave nectar</li>
+                        <li>Fresh fruit garnish</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Ichiban Japanese Steakhouse. All rights reserved.</p>
+        <p>Jason's Fire Fist Cocktails - "Choose Your Destiny!"</p>
+    </footer>
+
+    <script>
+        // Add floating fire particles effect
+        function createFireParticle() {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = '4px';
+            particle.style.height = '4px';
+            particle.style.background = `radial-gradient(circle, #FFD700 0%, #FF8C00 50%, transparent 100%)`;
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.opacity = Math.random();
+            
+            const startX = Math.random() * window.innerWidth;
+            const startY = window.innerHeight + 10;
+            
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            
+            document.body.appendChild(particle);
+            
+            const duration = 3000 + Math.random() * 2000;
+            const horizontalMovement = (Math.random() - 0.5) * 100;
+            
+            particle.animate([
+                { transform: 'translate(0, 0) scale(1)', opacity: 0 },
+                { transform: `translate(${horizontalMovement}px, -${window.innerHeight + 100}px) scale(0)`, opacity: 1 }
+            ], {
+                duration: duration,
+                easing: 'ease-out'
+            }).onfinish = () => particle.remove();
+        }
+        
+        // Create particles periodically
+        setInterval(createFireParticle, 200);
+    </script>
+</body>
+</html>

@@ -203,18 +203,46 @@
             box-shadow: 0 5px 20px rgba(220,20,60,0.5);
         }
 
-        /* Bartender Note */
-        .bartender-note {
+        /* Bartender Avatar */
+        .bartender-avatar {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(255,215,0,0.9);
-            color: var(--dark-bg);
-            padding: 1rem 1.5rem;
-            border-radius: 50px;
-            font-weight: bold;
-            animation: pulse 2s infinite;
+            width: 120px;
+            height: 120px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             z-index: 100;
+            filter: drop-shadow(0 5px 20px rgba(220,20,60,0.5));
+        }
+
+        .bartender-avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 8px 30px rgba(255,215,0,0.8));
+        }
+
+        .bartender-tooltip {
+            position: fixed;
+            bottom: 150px;
+            right: 20px;
+            background: rgba(26,26,26,0.95);
+            color: var(--gold-accent);
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            border: 2px solid var(--primary-red);
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .bartender-avatar:hover + .bartender-tooltip {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @keyframes pulse {
@@ -267,6 +295,7 @@
         <ul>
             <li><a href="#home">Home</a></li>
             <li><a href="menu.html">Menu</a></li>
+            <li><a href="cocktails.html">Jason's Cocktails</a></li>
             <li><a href="#events">Events</a></li>
             <li><a href="#reservations">Reservations</a></li>
             <li><a href="#contact">Contact</a></li>
@@ -350,9 +379,11 @@
         <p>Example website created for demonstration purposes</p>
     </footer>
 
-    <!-- Bartender Note -->
-    <div class="bartender-note">
-        🍺 Jason's bartending tonight!
+    <!-- Bartender Avatar -->
+    <img src="images/jason-liu-kang.svg" alt="Jason - Fire Fist Mixologist" class="bartender-avatar" title="Jason's bartending tonight!">
+    <div class="bartender-tooltip">
+        🔥 Jason's bartending tonight! 🔥<br>
+        <small>"Fire Fist Mixologist"</small>
     </div>
 
     <script>

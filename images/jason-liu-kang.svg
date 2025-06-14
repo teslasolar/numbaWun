@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Background circle with flame effect -->
+  <defs>
+    <radialGradient id="fireGrad">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#FF8C00;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#DC143C;stop-opacity:0.4" />
+    </radialGradient>
+    <radialGradient id="skinGrad">
+      <stop offset="0%" style="stop-color:#FDBCB4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F5A58C;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2C1810;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a0a05;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="headbandGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#DC143C;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FF0000;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DC143C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Flame background -->
+  <circle cx="200" cy="200" r="190" fill="url(#fireGrad)" opacity="0.3"/>
+  
+  <!-- Flame effects -->
+  <path d="M100 350 Q150 300 120 250 Q180 280 160 230 Q200 260 200 220" fill="#FF8C00" opacity="0.4"/>
+  <path d="M300 350 Q250 300 280 250 Q220 280 240 230 Q200 260 200 220" fill="#FF8C00" opacity="0.4"/>
+  
+  <!-- Body/Shoulders -->
+  <ellipse cx="200" cy="340" rx="100" ry="60" fill="#1a1a1a"/>
+  <rect x="150" y="300" width="100" height="60" fill="#1a1a1a"/>
+  
+  <!-- Bartender vest detail -->
+  <rect x="170" y="310" width="60" height="50" fill="#2a2a2a"/>
+  <rect x="175" y="315" width="50" height="40" fill="#DC143C" opacity="0.3"/>
+  
+  <!-- Neck -->
+  <rect x="175" y="200" width="50" height="100" fill="url(#skinGrad)"/>
+  
+  <!-- Head shape -->
+  <ellipse cx="200" cy="160" rx="65" ry="75" fill="url(#skinGrad)"/>
+  
+  <!-- Hair -->
+  <path d="M135 120 Q200 100 265 120 Q270 140 265 160 Q250 150 240 155 Q230 145 220 150 Q210 140 200 145 Q190 140 180 145 Q170 140 160 150 Q150 145 140 155 Q130 140 135 120" fill="url(#hairGrad)"/>
+  
+  <!-- Headband -->
+  <rect x="130" y="130" width="140" height="20" rx="5" fill="url(#headbandGrad)"/>
+  <circle cx="200" cy="140" r="8" fill="#FFD700"/>
+  <text x="200" y="145" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" fill="#8B0000">龍</text>
+  
+  <!-- Eyebrows -->
+  <path d="M165 155 Q175 150 185 155" stroke="#1a0a05" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M215 155 Q225 150 235 155" stroke="#1a0a05" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Eyes -->
+  <ellipse cx="175" cy="165" rx="12" ry="8" fill="white"/>
+  <ellipse cx="225" cy="165" rx="12" ry="8" fill="white"/>
+  <circle cx="175" cy="165" r="6" fill="#4B2C1F"/>
+  <circle cx="225" cy="165" r="6" fill="#4B2C1F"/>
+  <circle cx="177" cy="163" r="2" fill="white"/>
+  <circle cx="227" cy="163" r="2" fill="white"/>
+  
+  <!-- Nose -->
+  <path d="M200 175 L195 185 Q200 188 205 185 Z" fill="#E5A88C"/>
+  
+  <!-- Mouth -->
+  <path d="M185 195 Q200 205 215 195" stroke="#C68C7C" stroke-width="2" fill="none" stroke-linecap="round"/>
+  
+  <!-- Beard/Goatee (Liu Kang style) -->
+  <path d="M195 210 Q200 220 205 210" fill="#1a0a05"/>
+  <path d="M190 215 Q200 225 210 215" fill="#1a0a05" opacity="0.7"/>
+  
+  <!-- Martial arts collar -->
+  <path d="M150 280 Q200 260 250 280 L230 300 Q200 290 170 300 Z" fill="#8B0000"/>
+  <path d="M160 285 Q200 270 240 285" stroke="#FFD700" stroke-width="2" fill="none"/>
+  
+  <!-- Cocktail shaker in fighting pose -->
+  <g transform="rotate(-30 320 250)">
+    <rect x="300" y="230" width="40" height="60" rx="5" fill="#C0C0C0"/>
+    <rect x="300" y="220" width="40" height="15" rx="5" fill="#A0A0A0"/>
+    <ellipse cx="320" cy="220" rx="15" ry="5" fill="#B0B0B0"/>
+    <rect x="305" y="240" width="30" height="10" fill="#FFD700" opacity="0.5"/>
+  </g>
+  
+  <!-- Fire in palm -->
+  <g transform="translate(80, 240)">
+    <ellipse cx="0" cy="0" rx="30" ry="40" fill="#FF8C00" opacity="0.6"/>
+    <ellipse cx="0" cy="-5" rx="20" ry="30" fill="#FFD700" opacity="0.8"/>
+    <ellipse cx="0" cy="-10" rx="10" ry="20" fill="#FFFF00" opacity="0.9"/>
+  </g>
+  
+  <!-- Dragon tattoo on arm -->
+  <path d="M130 300 Q120 320 130 340" stroke="#DC143C" stroke-width="3" fill="none" opacity="0.7"/>
+  <circle cx="125" cy="310" r="3" fill="#DC143C" opacity="0.7"/>
+  <circle cx="125" cy="330" r="3" fill="#DC143C" opacity="0.7"/>
+  
+  <!-- Name banner -->
+  <rect x="120" y="360" width="160" height="30" rx="15" fill="#1a1a1a" stroke="#FFD700" stroke-width="2"/>
+  <text x="200" y="380" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#FFD700">JASON</text>
+  
+  <!-- Subtitle -->
+  <text x="200" y="400" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FF8C00">Fire Fist Mixologist</text>
+</svg>
